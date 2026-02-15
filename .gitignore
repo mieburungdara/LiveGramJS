@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+
+# Session files
+sessions/
+*.session
+
+# Database
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
+
+# Temporary
+tmp/
+temp/
+*.tmp
+
+# Bash dump
+bash.exe.stackdump
+
+# Kilocode internal
+.kilocode/

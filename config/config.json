@@ -1,0 +1,29 @@
+{
+  "server": {
+    "port": 3000,
+    "host": "localhost"
+  },
+  "telegram": {
+    "apiId": "YOUR_API_ID",
+    "apiHash": "YOUR_API_HASH"
+  },
+  "session": {
+    "encrypted": true,
+    "password": "livegramjs-secret-key-2024",
+    "path": "./sessions"
+  },
+  "performance": {
+    "defaultDelay": 1000,
+    "rateLimit": 10,
+    "maxRetries": 3,
+    "queueConcurrency": 1
+  },
+  "security": {
+    "apiRateLimit": 100,
+    "allowedOrigins": ["http://localhost:3000"]
+  },
+  "logging": {
+    "level": "info",
+    "path": "./logs"
+  }
+}
