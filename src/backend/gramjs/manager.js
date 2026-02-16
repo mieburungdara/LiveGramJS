@@ -5,6 +5,7 @@
 
 const { TelegramClient } = require('telegram');
 const { StringSession } = require('telegram/sessions');
+const { Api } = require('telegram');
 const fs = require('fs');
 const path = require('path');
 const CryptoJS = require('crypto-js');
@@ -224,18 +225,16 @@ class GramJSManager {
         try {
             await client.connect();
             
-            const { apiId, apiHash } = this.getApiCredentials();
-            const result = await client.invoke({
-                _: 'auth.sendCode',
-                phone_number: phone,
-                api_id: apiId,
-                api_hash: apiHash,
-                settings: { _: 'codeSettings' }
+            // Use GramJS built-in sendCode method
+            const result = await client.sendCode({
+                phoneNumber: phone,
+                apiId: this.config.telegram.apiId,
+                apiHash: this.config.telegram.apiHash
             });
 
             // Store phone code hash for verification
             this.phoneCodeHash = this.phoneCodeHash || new Map();
-            this.phoneCodeHash.set(phone, result.phone_code_hash);
+            this.phoneCodeHash.set(phone, result.phoneCodeHash);
 
             // Store temporary client
             this.tempClients = this.tempClients || new Map();
@@ -243,7 +242,7 @@ class GramJSManager {
 
             return {
                 success: true,
-                phoneCodeHash: result.phone_code_hash,
+                phoneCodeHash: result.phoneCodeHash,
                 message: 'Verification code sent'
             };
         } catch (e) {
@@ -269,11 +268,11 @@ class GramJSManager {
                 await client.connect();
             }
 
-            const result = await client.invoke({
-                _: 'auth.signIn',
-                phone_number: phone,
-                phone_code_hash: hash,
-                phone_code: code
+            // Use GramJS built-in signIn method
+            const result = await client.signInUserWithCode({
+                code: code,
+                phoneCodeHash: hash,
+                phoneNumber: phone
             });
 
             // Get user info
@@ -334,19 +333,9 @@ class GramJSManager {
                 await client.connect();
             }
 
-            await client.invoke({
-                _: 'auth.checkPassword',
-                password: {
-                    _: 'inputCheckPasswordSRP',
-                    srp_id: 0,
-                    A: Buffer.alloc(0),
-                    M1: Buffer.alloc(0)
-                }
-            });
-
-            // Alternative: use GramJS built-in method
-            const result = await client.signInUser(phone, {
-                password: (password) => password
+            // Use GramJS built-in method for 2FA
+            await client.signInUser(phone, {
+                password: () => password
             });
 
             // Get user info
@@ -387,7 +376,7 @@ class GramJSManager {
         
         if (client) {
             try {
-                await client.invoke({ _: 'auth.logOut' });
+                await client.invoke(new Api.auth.LogOut());
                 await this.disconnectClient(phone);
             } catch (e) {
                 console.error('Logout error:', e.message);

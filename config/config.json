@@ -1,11 +1,11 @@
 {
   "server": {
-    "port": 3001,
+    "port": 8080,
     "host": "localhost"
   },
   "telegram": {
-    "apiId": "YOUR_API_ID",
-    "apiHash": "YOUR_API_HASH"
+    "apiId": "3492277",
+    "apiHash": "0891af746430cd4b49a1cb3e645cff92"
   },
   "session": {
     "encrypted": true,
@@ -20,7 +20,7 @@
   },
   "security": {
     "apiRateLimit": 100,
-    "allowedOrigins": ["http://localhost:3001"]
+    "allowedOrigins": ["http://localhost:8080"]
   },
   "logging": {
     "level": "info",
