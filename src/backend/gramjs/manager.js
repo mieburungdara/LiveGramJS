@@ -325,6 +325,11 @@ class GramJSManager {
             
             // Check if 2FA is required
             if (e.message.includes('SESSION_PASSWORD_NEEDED')) {
+                // Keep client in tempClients for 2FA use
+                this.tempClients = this.tempClients || new Map();
+                this.tempClients.set(phone, client);
+                console.log(`📋 2FA required for ${phone}, client stored for 2FA`);
+                
                 return {
                     success: false,
                     requires2FA: true,
@@ -354,10 +359,14 @@ class GramJSManager {
                 new Api.account.GetPassword()
             );
 
-            // Use GramJS built-in method to compute SRP and check password
+            // Compute SRP using GramJS helpers
+            const { computeCheck } = require('telegram/client/auth');
+            const passwordCheck = await computeCheck(passwordResult, password);
+
+            // Check password
             const result = await client.invoke(
                 new Api.auth.CheckPassword({
-                    password: await client.computeSrp(passwordResult, password)
+                    password: passwordCheck
                 })
             );
 
