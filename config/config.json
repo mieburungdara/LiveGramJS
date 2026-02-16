@@ -4,7 +4,7 @@
     "host": "localhost"
   },
   "telegram": {
-    "apiId": "3492277",
+    "apiId": 3492277,
     "apiHash": "0891af746430cd4b49a1cb3e645cff92"
   },
   "session": {

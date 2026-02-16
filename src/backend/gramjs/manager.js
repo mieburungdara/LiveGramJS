@@ -225,12 +225,20 @@ class GramJSManager {
         try {
             await client.connect();
             
-            // Use GramJS built-in sendCode method
-            const result = await client.sendCode({
-                phoneNumber: phone,
-                apiId: this.config.telegram.apiId,
-                apiHash: this.config.telegram.apiHash
-            });
+            const { apiId, apiHash } = this.getApiCredentials();
+            
+            console.log(`📱 Sending code to ${phone}...`);
+            console.log(`   API ID: ${apiId} (type: ${typeof apiId})`);
+            
+            // Use Api.auth.SendCode directly with proper constructor
+            const result = await client.invoke(
+                new Api.auth.SendCode({
+                    phoneNumber: phone,
+                    apiId: apiId,
+                    apiHash: apiHash,
+                    settings: new Api.CodeSettings()
+                })
+            );
 
             // Store phone code hash for verification
             this.phoneCodeHash = this.phoneCodeHash || new Map();
@@ -239,6 +247,8 @@ class GramJSManager {
             // Store temporary client
             this.tempClients = this.tempClients || new Map();
             this.tempClients.set(phone, client);
+
+            console.log(`✅ Code sent to ${phone}`);
 
             return {
                 success: true,
