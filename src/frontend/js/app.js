@@ -31,8 +31,9 @@ class LiveGramApp {
         // Check for saved sessions
         await this.checkSessions();
         
-        // Hide loading screen
+        // Hide loading screen and show login
         document.getElementById('loading-screen').classList.add('hidden');
+        document.getElementById('login-screen').classList.remove('hidden');
     }
     
     /**
