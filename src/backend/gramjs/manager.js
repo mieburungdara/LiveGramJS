@@ -278,12 +278,16 @@ class GramJSManager {
                 await client.connect();
             }
 
-            // Use GramJS built-in signIn method
-            const result = await client.signInUserWithCode({
-                code: code,
-                phoneCodeHash: hash,
-                phoneNumber: phone
-            });
+            console.log(`🔐 Verifying code for ${phone}...`);
+
+            // Use Api.auth.SignIn with proper constructor
+            const result = await client.invoke(
+                new Api.auth.SignIn({
+                    phoneNumber: phone,
+                    phoneCodeHash: hash,
+                    phoneCode: code
+                })
+            );
 
             // Get user info
             const me = await client.getMe();
