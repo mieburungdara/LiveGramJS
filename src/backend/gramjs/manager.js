@@ -347,10 +347,19 @@ class GramJSManager {
                 await client.connect();
             }
 
-            // Use GramJS built-in method for 2FA
-            await client.signInUser(phone, {
-                password: () => password
-            });
+            console.log(`🔐 Signing in with 2FA for ${phone}...`);
+
+            // Get password SRP info from Telegram
+            const passwordResult = await client.invoke(
+                new Api.account.GetPassword()
+            );
+
+            // Use GramJS built-in method to compute SRP and check password
+            const result = await client.invoke(
+                new Api.auth.CheckPassword({
+                    password: await client.computeSrp(passwordResult, password)
+                })
+            );
 
             // Get user info
             const me = await client.getMe();
@@ -365,6 +374,8 @@ class GramJSManager {
             });
 
             this.clients.set(phone, client);
+
+            console.log(`✅ 2FA Login successful: ${phone}`);
 
             return {
                 success: true,
